@@ -11,7 +11,7 @@ router.get('/', async (_req, res) => {
     .eq('archived', false)
     .order('name')
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.json(data)
 })
 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     .select()
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.status(201).json(data)
 })
 
@@ -42,7 +42,7 @@ router.patch('/:id', async (req, res) => {
     .select()
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.json(data)
 })
 
@@ -55,7 +55,7 @@ router.patch('/:id/archive', async (req, res) => {
     .select()
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.json(data)
 })
 

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
   if (req.query.product_id) query = query.eq('product_id', req.query.product_id as string)
 
   const { data, error } = await query
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.json(data)
 })
 
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
     .select('*, team:teams(id, name), product:products(id, name)')
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.status(201).json(data)
 })
 
@@ -68,7 +68,7 @@ router.patch('/:id', async (req, res) => {
     .select('*, team:teams(id, name), product:products(id, name)')
     .single()
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.json(data)
 })
 
@@ -79,7 +79,7 @@ router.delete('/:id', async (req, res) => {
     .update({ archived: true })
     .eq('id', req.params.id)
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
   res.status(204).send()
 })
 

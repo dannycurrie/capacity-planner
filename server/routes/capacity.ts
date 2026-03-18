@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     .select('fte, team:teams(id, name), product:products(id, name)')
     .eq('archived', false)
 
-  if (error) return res.status(500).json({ error: error.message })
+  if (error) throw error
 
   // Build 6-month window: current month + 5 ahead
   const months = getMonthRange(6)
