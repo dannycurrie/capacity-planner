@@ -15,12 +15,21 @@ function formatMonth(month: string) {
   return new Date(month + '-02').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
+const SUPPORT_ONCALL_FTE = 1
+const HOLIDAY_RATE = 0.07
+
+function deductNonDevFte(rawFte: number): number {
+  const adjusted = rawFte * (1 - HOLIDAY_RATE) - SUPPORT_ONCALL_FTE
+  return Math.max(0, Math.round(adjusted * 100) / 100)
+}
+
 export function CapacityView() {
   const [groupBy, setGroupBy] = useState<GroupBy>('team')
   const [data, setData] = useState<CapacityResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selected, setSelected] = useState<Selected | null>(null)
+  const [deductNonDev, setDeductNonDev] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -31,6 +40,10 @@ export function CapacityView() {
       .finally(() => setLoading(false))
   }, [groupBy])
 
+  function getDisplayFte(rawFte: number): number {
+    return deductNonDev ? deductNonDevFte(rawFte) : rawFte
+  }
+
   return (
     <div className="view">
       <div className="view-header">
@@ -38,21 +51,35 @@ export function CapacityView() {
           <h1>Capacity</h1>
           <p className="subtitle">6-month rolling view</p>
         </div>
-        <div className="toggle-group">
+        <div className="capacity-controls">
+          <div className="toggle-group">
+            <button
+              className={groupBy === 'team' ? 'btn-primary' : 'btn-ghost'}
+              onClick={() => setGroupBy('team')}
+            >
+              By Team
+            </button>
+            <button
+              className={groupBy === 'product' ? 'btn-primary' : 'btn-ghost'}
+              onClick={() => setGroupBy('product')}
+            >
+              By Product
+            </button>
+          </div>
           <button
-            className={groupBy === 'team' ? 'btn-primary' : 'btn-ghost'}
-            onClick={() => setGroupBy('team')}
+            className={deductNonDev ? 'btn-primary' : 'btn-ghost'}
+            onClick={() => setDeductNonDev(d => !d)}
+            title="Deduct 1 FTE/team/month for support &amp; on-call, plus 7% for holidays"
           >
-            By Team
-          </button>
-          <button
-            className={groupBy === 'product' ? 'btn-primary' : 'btn-ghost'}
-            onClick={() => setGroupBy('product')}
-          >
-            By Product
+            Deduct non-dev time
           </button>
         </div>
       </div>
+      {deductNonDev && (
+        <p className="deduction-note">
+          Showing development capacity after deducting 1 FTE/team/month for support &amp; on-call and 7% for holidays.
+        </p>
+      )}
 
       {error && <p className="page-error">{error}</p>}
 
@@ -86,7 +113,7 @@ export function CapacityView() {
                           onClick={() => setSelected({ rowId: row.id, rowName: row.name, month: m })}
                           title={`${row.name} — ${formatMonth(m)}`}
                         >
-                          <span className="fte">{cell.fte.toFixed(1)}</span>
+                          <span className="fte">{getDisplayFte(cell.fte).toFixed(1)}</span>
                           <span className="headcount">{cell.headcount} {cell.headcount === 1 ? 'person' : 'people'}</span>
                         </button>
                       </td>
@@ -98,9 +125,12 @@ export function CapacityView() {
                 <td>Total</td>
                 {data.months.map(m => {
                   const cell = data.totals[m]
+                  const totalDisplayFte = deductNonDev
+                    ? Math.round(data.rows.reduce((sum, r) => sum + deductNonDevFte(r.months[m].fte), 0) * 100) / 100
+                    : cell.fte
                   return (
                     <td key={m} className="col-month">
-                      <span className="fte">{cell.fte.toFixed(1)}</span>
+                      <span className="fte">{totalDisplayFte.toFixed(1)}</span>
                       <span className="headcount">{cell.headcount} {cell.headcount === 1 ? 'person' : 'people'}</span>
                     </td>
                   )
