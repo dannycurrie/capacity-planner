@@ -314,9 +314,27 @@ label {
 
 /* ── Capacity view ────────────────────────────────────── */
 
+.capacity-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .toggle-group {
   display: flex;
   gap: 6px;
+}
+
+.deduction-note {
+  font-size: 13px;
+  color: var(--text);
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 0 0 20px;
 }
 
 .col-group {
