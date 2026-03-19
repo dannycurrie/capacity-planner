@@ -26,6 +26,7 @@ export interface CapacityResponse {
     months: Record<string, CapacityCell>
   }[]
   totals: Record<string, CapacityCell>
+  team_count: number
 }
 
 export interface TeamMember {

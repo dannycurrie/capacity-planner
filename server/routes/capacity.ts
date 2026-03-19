@@ -20,6 +20,11 @@ router.get('/', async (req, res) => {
   // Build 6-month window: current month + 5 ahead
   const months = getMonthRange(6)
 
+  // Count distinct teams (used by frontend for per-product deduction)
+  const teamIds = new Set(
+    (members ?? []).map(m => (m.team as { id: string; name: string } | null)?.id).filter(Boolean)
+  )
+
   // Group members by team or product
   const groups = new Map<string, { id: string; name: string; totalFte: number; headcount: number }>()
 
@@ -59,7 +64,7 @@ router.get('/', async (req, res) => {
     })
   )
 
-  res.json({ group_by: groupBy, months, rows, totals })
+  res.json({ group_by: groupBy, months, rows, totals, team_count: teamIds.size })
 })
 
 function getMonthRange(count: number): string[] {
