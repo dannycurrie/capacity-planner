@@ -14,6 +14,21 @@ create table products (
   created_at timestamptz not null default now()
 );
 
+-- Initiatives (product-level work items)
+create table initiatives (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references products (id) on delete cascade,
+  name text not null,
+  description text,
+  effort_months numeric(5, 1),
+  status text not null default 'proposed'
+    check (status in ('proposed', 'discovery', 'selected', 'in_development', 'released', 'backburner', 'rejected')),
+  prd_link text,
+  source text not null default 'product'
+    check (source in ('product', 'tech')),
+  created_at timestamptz not null default now()
+);
+
 -- Team members (assignment to team + product is embedded — 1:1 per PRD)
 create table team_members (
   id uuid primary key default gen_random_uuid(),

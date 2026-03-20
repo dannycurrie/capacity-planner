@@ -2,8 +2,9 @@ import { useState } from 'react'
 import './App.css'
 import { RosterView } from './components/RosterView'
 import { CapacityView } from './components/CapacityView'
+import { InitiativesView } from './components/InitiativesView'
 
-type View = 'roster' | 'capacity'
+type View = 'roster' | 'capacity' | 'initiatives'
 
 function App() {
   const [activeView, setActiveView] = useState<View>('roster')
@@ -23,9 +24,17 @@ function App() {
         >
           Capacity
         </button>
+        <button
+          className={activeView === 'initiatives' ? 'active' : ''}
+          onClick={() => setActiveView('initiatives')}
+        >
+          Initiatives
+        </button>
       </nav>
 
-      {activeView === 'roster' ? <RosterView /> : <CapacityView />}
+      {activeView === 'roster' && <RosterView />}
+      {activeView === 'capacity' && <CapacityView />}
+      {activeView === 'initiatives' && <InitiativesView />}
     </>
   )
 }
