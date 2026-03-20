@@ -1,4 +1,4 @@
-import type { Team, Product, TeamMember, CapacityResponse } from './types'
+import type { Team, Product, TeamMember, CapacityResponse, Initiative, InitiativeStatus, InitiativeSource } from './types'
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api'
 
@@ -38,5 +38,32 @@ export const api = {
   capacity: {
     get: (groupBy: 'team' | 'product') =>
       req<CapacityResponse>(`/capacity?group_by=${groupBy}`),
+  },
+  initiatives: {
+    list: (filters?: { product_id?: string }) => {
+      const params = new URLSearchParams()
+      if (filters?.product_id) params.set('product_id', filters.product_id)
+      const qs = params.size ? `?${params}` : ''
+      return req<Initiative[]>(`/initiatives${qs}`)
+    },
+    create: (data: {
+      product_id: string
+      name: string
+      description?: string
+      effort_months?: number | null
+      status: InitiativeStatus
+      prd_link?: string
+      source: InitiativeSource
+    }) => req<Initiative>('/initiatives', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: Partial<{
+      product_id: string
+      name: string
+      description: string | null
+      effort_months: number | null
+      status: InitiativeStatus
+      prd_link: string | null
+      source: InitiativeSource
+    }>) => req<Initiative>(`/initiatives/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id: string) => req<void>(`/initiatives/${id}`, { method: 'DELETE' }),
   },
 }

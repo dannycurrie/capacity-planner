@@ -28,6 +28,22 @@ export interface CapacityResponse {
   totals: Record<string, CapacityCell>
 }
 
+export type InitiativeStatus = 'proposed' | 'discovery' | 'selected' | 'in_development' | 'released' | 'backburner' | 'rejected'
+export type InitiativeSource = 'product' | 'tech'
+
+export interface Initiative {
+  id: string
+  product_id: string
+  name: string
+  description: string | null
+  effort_months: number | null
+  status: InitiativeStatus
+  prd_link: string | null
+  source: InitiativeSource
+  created_at: string
+  product: { id: string; name: string }
+}
+
 export interface TeamMember {
   id: string
   name: string

@@ -6,6 +6,7 @@ import teamsRouter from './routes/teams.js'
 import productsRouter from './routes/products.js'
 import membersRouter from './routes/members.js'
 import capacityRouter from './routes/capacity.js'
+import initiativesRouter from './routes/initiatives.js'
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use('/teams', teamsRouter)
 app.use('/products', productsRouter)
 app.use('/members', membersRouter)
 app.use('/capacity', capacityRouter)
+app.use('/initiatives', initiativesRouter)
 
 app.get('/health', async (_req, res) => {
   const { error } = await supabase.from('teams').select('id').limit(1)
