@@ -15,11 +15,11 @@ function formatMonth(month: string) {
   return new Date(month + '-02').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-const SUPPORT_ONCALL_FTE = 1
+const SUPPORT_ONCALL_RATE = 0.20
 const HOLIDAY_RATE = 0.07
 
-function deductNonDevFte(rawFte: number, supportOncallFte: number): number {
-  const adjusted = rawFte * (1 - HOLIDAY_RATE) - supportOncallFte
+function deductNonDevFte(rawFte: number): number {
+  const adjusted = rawFte * (1 - SUPPORT_ONCALL_RATE - HOLIDAY_RATE)
   return Math.max(0, Math.round(adjusted * 100) / 100)
 }
 
@@ -40,13 +40,8 @@ export function CapacityView() {
       .finally(() => setLoading(false))
   }, [groupBy])
 
-  // When viewing by product: spread the per-team deduction evenly across all products
-  const supportOncallFtePerRow = data && groupBy === 'product' && data.rows.length > 0
-    ? (SUPPORT_ONCALL_FTE * data.team_count) / data.rows.length
-    : SUPPORT_ONCALL_FTE
-
   function getDisplayFte(rawFte: number): number {
-    return deductNonDev ? deductNonDevFte(rawFte, supportOncallFtePerRow) : rawFte
+    return deductNonDev ? deductNonDevFte(rawFte) : rawFte
   }
 
   return (
@@ -74,7 +69,7 @@ export function CapacityView() {
           <button
             className={deductNonDev ? 'btn-primary' : 'btn-ghost'}
             onClick={() => setDeductNonDev(d => !d)}
-            title="Deduct 1 FTE/team/month for support &amp; on-call, plus 7% for holidays"
+            title="Deduct 20% for support &amp; on-call and 7% for holidays"
           >
             Deduct non-dev time
           </button>
@@ -82,7 +77,7 @@ export function CapacityView() {
       </div>
       {deductNonDev && (
         <p className="deduction-note">
-          Showing development capacity after deducting 1 FTE/team/month for support &amp; on-call and 7% for holidays.
+          Showing development capacity after deducting 20% for support &amp; on-call and 7% for holidays.
         </p>
       )}
 
@@ -131,7 +126,7 @@ export function CapacityView() {
                 {data.months.map(m => {
                   const cell = data.totals[m]
                   const totalDisplayFte = deductNonDev
-                    ? Math.round(data.rows.reduce((sum, r) => sum + deductNonDevFte(r.months[m].fte, supportOncallFtePerRow), 0) * 100) / 100
+                    ? Math.round(data.rows.reduce((sum, r) => sum + deductNonDevFte(r.months[m].fte), 0) * 100) / 100
                     : cell.fte
                   return (
                     <td key={m} className="col-month">
