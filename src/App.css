@@ -517,3 +517,79 @@ textarea:focus {
   color: var(--text);
   text-align: center;
 }
+
+/* ── Load view ────────────────────────────────────────── */
+
+.load-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.load-cell .load-num {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 14px;
+}
+
+.load-cell .cap-num {
+  font-size: 11px;
+  color: var(--text);
+}
+
+.load-cell[data-status='warn'] {
+  background: color-mix(in srgb, #f59e0b 12%, transparent);
+}
+
+.load-cell[data-status='warn'] .load-num {
+  color: #d97706;
+}
+
+.load-cell[data-status='over'] {
+  background: color-mix(in srgb, #ef4444 12%, transparent);
+}
+
+.load-cell[data-status='over'] .load-num {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.oversubscribed-banner {
+  background: color-mix(in srgb, #ef4444 8%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 30%, transparent);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  color: #ef4444;
+}
+
+.unscheduled-note {
+  font-size: 13px;
+  color: var(--text);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 16px;
+}
+
+.col-unscheduled {
+  text-align: center;
+  min-width: 100px;
+  white-space: nowrap;
+}
+
+.unscheduled-val {
+  font-size: 13px;
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.muted {
+  color: var(--text);
+  font-size: 13px;
+}

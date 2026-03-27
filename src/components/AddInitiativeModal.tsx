@@ -28,6 +28,7 @@ const EMPTY = {
   status: 'proposed' as InitiativeStatus,
   prd_link: '',
   source: 'product' as InitiativeSource,
+  start_month: '',
 }
 
 export function AddInitiativeModal({ products, initiative, defaultProductId, onSave, onClose }: Props) {
@@ -41,6 +42,7 @@ export function AddInitiativeModal({ products, initiative, defaultProductId, onS
           status: initiative.status,
           prd_link: initiative.prd_link ?? '',
           source: initiative.source,
+          start_month: initiative.start_month ?? '',
         }
       : { ...EMPTY, product_id: defaultProductId ?? '' }
   )
@@ -77,6 +79,7 @@ export function AddInitiativeModal({ products, initiative, defaultProductId, onS
         status: form.status,
         prd_link: form.prd_link.trim() || undefined,
         source: form.source,
+        start_month: form.start_month || null,
       }
       if (initiative) {
         await api.initiatives.update(initiative.id, payload)
@@ -138,6 +141,14 @@ export function AddInitiativeModal({ products, initiative, defaultProductId, onS
                 placeholder="e.g. 3"
                 min="0.1"
                 step="0.5"
+              />
+            </label>
+            <label>
+              Start month (optional)
+              <input
+                type="month"
+                value={form.start_month}
+                onChange={e => set('start_month', e.target.value)}
               />
             </label>
             <label>

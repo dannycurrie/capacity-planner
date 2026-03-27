@@ -41,8 +41,28 @@ export interface Initiative {
   prd_link: string | null
   source: InitiativeSource
   selected_for_development: boolean
+  start_month: string | null
   created_at: string
   product: { id: string; name: string }
+}
+
+export interface LoadCell {
+  load_fte: number
+  capacity_fte: number
+  ratio: number
+}
+
+export interface LoadResponse {
+  group_by: 'team' | 'product'
+  months: string[]
+  rows: {
+    id: string
+    name: string
+    months: Record<string, LoadCell>
+    unscheduled_load: number
+  }[]
+  totals: Record<string, LoadCell>
+  unscheduled_total: number
 }
 
 export interface TeamMember {
