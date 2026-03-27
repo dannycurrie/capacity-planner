@@ -26,6 +26,8 @@ create table initiatives (
   prd_link text,
   source text not null default 'product'
     check (source in ('product', 'tech')),
+  selected_for_development boolean not null default false,
+  start_month text check (start_month is null or start_month ~ '^\d{4}-\d{2}$'),
   created_at timestamptz not null default now()
 );
 

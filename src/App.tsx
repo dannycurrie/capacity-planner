@@ -3,8 +3,9 @@ import './App.css'
 import { RosterView } from './components/RosterView'
 import { CapacityView } from './components/CapacityView'
 import { InitiativesView } from './components/InitiativesView'
+import { LoadView } from './components/LoadView'
 
-type View = 'roster' | 'capacity' | 'initiatives'
+type View = 'roster' | 'capacity' | 'initiatives' | 'load'
 
 function App() {
   const [activeView, setActiveView] = useState<View>('roster')
@@ -30,11 +31,18 @@ function App() {
         >
           Initiatives
         </button>
+        <button
+          className={activeView === 'load' ? 'active' : ''}
+          onClick={() => setActiveView('load')}
+        >
+          Load
+        </button>
       </nav>
 
       {activeView === 'roster' && <RosterView />}
       {activeView === 'capacity' && <CapacityView />}
       {activeView === 'initiatives' && <InitiativesView />}
+      {activeView === 'load' && <LoadView />}
     </>
   )
 }

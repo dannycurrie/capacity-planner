@@ -1,4 +1,4 @@
-import type { Team, Product, TeamMember, CapacityResponse, Initiative, InitiativeStatus, InitiativeSource } from './types'
+import type { Team, Product, TeamMember, CapacityResponse, Initiative, InitiativeStatus, InitiativeSource, LoadResponse } from './types'
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api'
 
@@ -54,6 +54,7 @@ export const api = {
       status: InitiativeStatus
       prd_link?: string
       source: InitiativeSource
+      start_month?: string | null
     }) => req<Initiative>('/initiatives', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<{
       product_id: string
@@ -63,7 +64,16 @@ export const api = {
       status: InitiativeStatus
       prd_link: string | null
       source: InitiativeSource
+      selected_for_development: boolean
+      start_month: string | null
     }>) => req<Initiative>(`/initiatives/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     remove: (id: string) => req<void>(`/initiatives/${id}`, { method: 'DELETE' }),
+  },
+  load: {
+    get: (groupBy: 'team' | 'product', months?: number) => {
+      const params = new URLSearchParams({ group_by: groupBy })
+      if (months) params.set('months', String(months))
+      return req<LoadResponse>(`/load?${params}`)
+    },
   },
 }
