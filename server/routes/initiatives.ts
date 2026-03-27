@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 
 // POST /initiatives — create an initiative
 router.post('/', async (req, res) => {
-  const { product_id, name, description, effort_months, status, prd_link, source } = req.body
+  const { product_id, name, description, effort_months, status, prd_link, source, selected_for_development } = req.body
   if (!name?.trim()) return res.status(400).json({ error: 'name is required' })
   if (!product_id) return res.status(400).json({ error: 'product_id is required' })
 
@@ -35,6 +35,7 @@ router.post('/', async (req, res) => {
       status: status ?? 'proposed',
       prd_link: prd_link?.trim() || null,
       source: source ?? 'product',
+      selected_for_development: selected_for_development ?? false,
     })
     .select('*, product:products(id, name)')
     .single()
@@ -45,7 +46,7 @@ router.post('/', async (req, res) => {
 
 // PATCH /initiatives/:id — update an initiative
 router.patch('/:id', async (req, res) => {
-  const { name, description, effort_months, status, prd_link, source, product_id } = req.body
+  const { name, description, effort_months, status, prd_link, source, product_id, selected_for_development } = req.body
 
   const updates: Record<string, unknown> = {}
   if (name !== undefined) updates.name = name.trim()
@@ -55,6 +56,7 @@ router.patch('/:id', async (req, res) => {
   if (prd_link !== undefined) updates.prd_link = prd_link?.trim() || null
   if (source !== undefined) updates.source = source
   if (product_id !== undefined) updates.product_id = product_id
+  if (selected_for_development !== undefined) updates.selected_for_development = selected_for_development
 
   const { data, error } = await supabase
     .from('initiatives')

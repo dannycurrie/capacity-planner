@@ -357,6 +357,39 @@ label {
   white-space: nowrap;
 }
 
+.col-selected {
+  width: 64px;
+  text-align: center;
+}
+
+.select-dev-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  color: var(--text);
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.select-dev-btn:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.select-dev-btn--on {
+  color: #f59e0b;
+}
+
+.select-dev-btn--on:hover {
+  color: #d97706;
+}
+
+.row-selected-for-dev td {
+  background: color-mix(in srgb, #f59e0b 6%, transparent);
+}
+
 .prd-link {
   color: var(--accent);
   text-decoration: none;

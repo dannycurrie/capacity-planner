@@ -26,6 +26,7 @@ create table initiatives (
   prd_link text,
   source text not null default 'product'
     check (source in ('product', 'tech')),
+  selected_for_development boolean not null default false,
   created_at timestamptz not null default now()
 );
 

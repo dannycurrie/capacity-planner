@@ -40,6 +40,7 @@ export interface Initiative {
   status: InitiativeStatus
   prd_link: string | null
   source: InitiativeSource
+  selected_for_development: boolean
   created_at: string
   product: { id: string; name: string }
 }

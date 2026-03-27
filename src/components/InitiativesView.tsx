@@ -64,6 +64,16 @@ export function InitiativesView() {
     }
   }
 
+  async function handleToggleSelected(initiative: Initiative) {
+    const next = !initiative.selected_for_development
+    try {
+      const updated = await api.initiatives.update(initiative.id, { selected_for_development: next })
+      setInitiatives(prev => prev.map(i => i.id === initiative.id ? updated : i))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update')
+    }
+  }
+
   const filtered = filterStatus
     ? initiatives.filter(i => i.status === filterStatus)
     : initiatives
@@ -111,12 +121,13 @@ export function InitiativesView() {
                 <th>Source</th>
                 <th className="col-effort">Effort (mo)</th>
                 <th>PRD</th>
+                <th className="col-selected">For dev</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(initiative => (
-                <tr key={initiative.id}>
+                <tr key={initiative.id} className={initiative.selected_for_development ? 'row-selected-for-dev' : undefined}>
                   <td>
                     <div className="initiative-name">{initiative.name}</div>
                     {initiative.description && (
@@ -140,6 +151,16 @@ export function InitiativesView() {
                     {initiative.prd_link ? (
                       <a href={initiative.prd_link} target="_blank" rel="noreferrer" className="prd-link">PRD ↗</a>
                     ) : '—'}
+                  </td>
+                  <td className="col-selected">
+                    <button
+                      className={`select-dev-btn${initiative.selected_for_development ? ' select-dev-btn--on' : ''}`}
+                      onClick={() => handleToggleSelected(initiative)}
+                      aria-label={initiative.selected_for_development ? 'Remove from development' : 'Select for development'}
+                      title={initiative.selected_for_development ? 'Remove from development' : 'Select for development'}
+                    >
+                      {initiative.selected_for_development ? '★' : '☆'}
+                    </button>
                   </td>
                   <td className="col-actions">
                     <button className="btn-ghost icon-btn" onClick={() => setEditing(initiative)} aria-label="Edit">✎</button>

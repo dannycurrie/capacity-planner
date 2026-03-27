@@ -63,6 +63,7 @@ export const api = {
       status: InitiativeStatus
       prd_link: string | null
       source: InitiativeSource
+      selected_for_development: boolean
     }>) => req<Initiative>(`/initiatives/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     remove: (id: string) => req<void>(`/initiatives/${id}`, { method: 'DELETE' }),
   },
